@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: rgb(219, 39, 119); /* Magenta */
+  background-color: rgba(#ff00ff, 0.03);
+}
