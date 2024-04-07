@@ -56,13 +56,17 @@
                 <label class="font-semibold">{{ code.filename }}</label>
                 <span>{{ code.description }}</span>
                 <!-- <div v-if="!code.value" class="loader mt-4 mb-4"></div> -->
-                <!-- <VCodeBlock v-else :code="code.value" highlightjs :lang="code.lang" theme="night-owl" class="mb-4" /> -->
               </div>
             </div>
           </div>
         </TabPanel>
 
-        <TabPanel header="Repository code" :disabled="!codes.length"> </TabPanel>
+        <TabPanel header="Repository code" :disabled="!codes.length">
+          <div v-for="code of $options.scripts" :key="code.code" class="flex flex-col gap-4">
+            <label class="font-semibold">{{ code.filename }}</label>
+            <VCodeBlock :code="code.code" highlightjs :lang="code.lang" theme="night-owl" class="mb-4" />
+          </div>
+        </TabPanel>
       </TabView>
     </main>
   </div>
@@ -72,7 +76,7 @@
 import NavbarComponent from "./components/NavbarComponent.vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
-// import VCodeBlock from "@wdns/vue-code-block";
+import VCodeBlock from "@wdns/vue-code-block";
 import Dropdown from "primevue/dropdown";
 import Message from "primevue/message";
 
@@ -80,15 +84,17 @@ import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 
 import migratedCode from "./migrated.json";
+import scripts from "./scripts.js";
 
 export default {
   name: "App",
   API_BASE: "http://10.0.5.217:7676",
+  scripts,
   components: {
     NavbarComponent,
     InputText,
     Button,
-    // VCodeBlock,
+    VCodeBlock,
     Dropdown,
     Message,
     TabView,
