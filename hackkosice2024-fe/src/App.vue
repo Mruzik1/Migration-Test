@@ -65,16 +65,12 @@
             />
 
             <div class="w-full">
-              <VCodeBlock
-                v-for="code of codes"
-                :code="code.value"
-                highlightjs
-                :key="code.value"
-                :label="code.filename"
-                :lang="code.lang"
-                theme="night-owl"
-                class="mb-4"
-              />
+              <div v-for="code of codes" :key="code.value" class="flex flex-col gap-4 mb-4">
+                <label class="font-semibold">{{ code.filename }}</label>
+                <span>{{ code.description }}</span>
+                <!-- <div v-if="!code.value" class="loader mt-4 mb-4"></div> -->
+                <!-- <VCodeBlock v-else :code="code.value" highlightjs :lang="code.lang" theme="night-owl" class="mb-4" /> -->
+              </div>
             </div>
           </div>
         </TabPanel>
@@ -116,7 +112,7 @@
 import NavbarComponent from "./components/NavbarComponent.vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
-import VCodeBlock from "@wdns/vue-code-block";
+// import VCodeBlock from "@wdns/vue-code-block";
 import Dropdown from "primevue/dropdown";
 import Textarea from "primevue/textarea";
 import Message from "primevue/message";
@@ -124,14 +120,16 @@ import Message from "primevue/message";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 
+import migratedCode from "./migrated.json";
+
 export default {
   name: "App",
-  API_BASE: "http://10.0.4.174/",
+  API_BASE: "http://10.0.5.217:7676",
   components: {
     NavbarComponent,
     InputText,
     Button,
-    VCodeBlock,
+    // VCodeBlock,
     Dropdown,
     Textarea,
     Message,
@@ -163,7 +161,7 @@ export default {
       //         filename: "main.js",
       //       },
       //     ],
-      codes: [],
+      codes: migratedCode,
     };
   },
 
@@ -180,6 +178,17 @@ export default {
       }
 
       this.error = null;
+
+      this.axios(`${this.$options.API_BASE}/code_migrator`, {
+        method: "POST",
+        data: {
+          selectedFrom: this.selectedFrom,
+          selectedTo: this.selectedTo,
+          repoLink: this.repoLink,
+        },
+      }).then((data) => {
+        console.log(migratedCode, data);
+      });
     },
   },
 };
@@ -188,5 +197,50 @@ export default {
 <style lang="scss" scoped>
 .p-tabview::v-deep(.p-tabview-ink-bar) {
   background-color: rgb(219, 39, 119) !important;
+}
+
+.loader {
+  width: 25px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 4px solid #514b82;
+  animation: l20-1 0.8s infinite linear alternate, l20-2 1.6s infinite linear;
+}
+@keyframes l20-1 {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+  }
+  12.5% {
+    clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%);
+  }
+  25% {
+    clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%);
+  }
+  50% {
+    clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%);
+  }
+  62.5% {
+    clip-path: polygon(50% 50%, 100% 0, 100% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%);
+  }
+  75% {
+    clip-path: polygon(50% 50%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 50% 100%, 0% 100%);
+  }
+  100% {
+    clip-path: polygon(50% 50%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 0% 100%);
+  }
+}
+@keyframes l20-2 {
+  0% {
+    transform: scaleY(1) rotate(0deg);
+  }
+  49.99% {
+    transform: scaleY(1) rotate(135deg);
+  }
+  50% {
+    transform: scaleY(-1) rotate(0deg);
+  }
+  100% {
+    transform: scaleY(-1) rotate(-135deg);
+  }
 }
 </style>

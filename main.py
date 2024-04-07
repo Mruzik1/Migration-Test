@@ -2,7 +2,7 @@ import os
 from openai import OpenAI
 import re
 
-client = OpenAI(base_url="http://10.0.4.174:5555/v1", api_key="lm-studio")
+client = OpenAI(base_url="http://10.0.5.217:5555/v1", api_key="lm-studio")
 
 directory_path = './Migration-Test/hackkosice2024-fe'
 ignore_list = ['node_modules', '.git', 'venv']
